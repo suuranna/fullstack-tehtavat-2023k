@@ -24,11 +24,16 @@ const App = () => {
 
   const addNewNumber = (event) => {
     event.preventDefault()
-    const numberObject = {
-      name: newName
+    const isNew = persons.map(person => person.name).includes(newName)
+    if (isNew) {
+      alert(newName + ' is already added to phonebook')
+    } else {
+      const numberObject = {
+        name: newName
+      }
+      setPersons(persons.concat(numberObject))
+      setNewName('')
     }
-    setPersons(persons.concat(numberObject))
-    setNewName('')
   }
 
   const handleNameChange = (event) => {
