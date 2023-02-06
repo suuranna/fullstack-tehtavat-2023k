@@ -6,15 +6,17 @@ const Numbers = (props) => {
   return (
     <div>
       <h2>Numbers</h2>
-      {props.persons.map(person => <Number key={person.name} person={person} /> )}
+        {props.persons.map(person => <Number key={person.name} person={person} /> )}
     </div>
-
   )
 }
 
 const Number = (props) => {
   return (
-    <p>{props.person.name} {props.person.number}</p>
+    <div>
+      <p>{props.person.name} {props.person.number}</p>
+      <button onClick={() => props.removePerson(props.person.id)}>delete</button>
+    </div>
   )
 }
 
@@ -91,6 +93,17 @@ const App = () => {
     setShowAll(event.target.value)
   }
 
+  const removePerson = (id) => {
+    if (window.confirm('Delete person with id ' + id)) {
+      personService.remove(id)
+      personService
+        .getAll()
+        .then(response => {
+          setPersons(persons.map(person => person.id !== id ? person : response.data))
+        })
+    }
+  }
+
   const numbersToShow = showAll === ''
     ? persons
     : persons.filter(person => person.name.toLowerCase().includes(showAll.toLowerCase()))
@@ -102,7 +115,15 @@ const App = () => {
 
       <h2>add new contact</h2>
       <NewContact addNewPerson={addNewPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
-      <Numbers persons={numbersToShow}/>
+      <h2>Numbers</h2>
+      <div>
+        {numbersToShow.map(person => 
+          <Number 
+            key={person.id} 
+            person={person} 
+            removePerson={() => removePerson(person.id)}/>
+        )}
+      </div>
     </div>
   )
 
